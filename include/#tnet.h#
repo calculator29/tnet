@@ -1,0 +1,74 @@
+// バージョン	： 4.0
+// 作成日時	： 2015/11/21
+
+#pragma once
+
+// C ランタイム ヘッダー ファイル
+#include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <stdarg.h>
+#include <time.h>
+#include <fcntl.h>
+
+// C++ ファイル
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+// Eigen ファイル
+#include <Eigen/Core>
+#include <Eigen/LU>
+#include <Eigen/Dense>
+
+using namespace Eigen;
+using namespace std;
+
+/* パーセプトロン */
+class NeuralNet {
+ private:
+  double T = 1.0;
+  double alfa = 0.1;	// 重みの学習率
+  double beta = 0.1;	// 閾値の学習率
+  double reg = 1E-4;	// 正則の重み
+
+ public:
+  vector<int> Size;
+
+  vector<VectorXd*> Y;	//それぞれの出力値
+  vector<VectorXd*> Delta;	//誤差伝播用
+  vector<VectorXd*> Theta;	//閾値
+  vector<MatrixXd*> Wait;		//それぞれの重み
+  vector<MatrixXd*> dWait;
+
+
+  /* コンストラクタ */
+  /* レイヤー数，入力層，隠れ層，... ，出力層 */
+  NeuralNet(const int layer, ...);
+
+  /* デストラクタ */
+  ~NeuralNet();
+
+  /* シグモイド関数 */
+  VectorXd Sigmoid(const VectorXd &x);
+
+  /* シグモイドの微分 */
+  VectorXd d_Sigmoid(const VectorXd &y);
+
+  /* 線形関数 */
+  VectorXd Liner(const VectorXd &x);
+
+  /* 線形関数微分 */
+  VectorXd d_Liner(const VectorXd &y);
+
+  /* 出力 */
+  VectorXd operator()(const VectorXd &Input);
+
+  /* 学習 */
+  void Study(const VectorXd &Error);
+
+  void ChangeAlfa(double value) {
+    alfa = value;
+    beta = value;
+  }
+};
